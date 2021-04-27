@@ -1,0 +1,18 @@
+.splash-body {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+}
+
+.splash-body img {
+  height: 400px;
+  object-fit: contain;
+  align-self: center;
+}
+.splash-body .on-start {
+  animation: fade-in 1.5s ease-in;
+}
+.splash-body .on-exit {
+  animation: fade-out 1.5s ease-out;
+}
