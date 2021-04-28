@@ -1,69 +1,45 @@
 import React, { Component } from "react";
 import Loader from "../../../../assets/widgets/loader/loader";
-import { _database } from "../../../../config";
-import Issue from "./issue/issue";
+import { formatDate, _database } from "../../../../config";
+import Complete from "./complete/complete";
 
-export default class Hire extends Component {
+export default class Recieve extends Component {
   state = {
     loading: true,
+    hired: [],
   };
   async componentDidMount() {
     this.db = _database.ref();
-    await this.db.child("customers").on("value", (x) => {
+    await this.db.on("value", (x) => {
       const aps = [];
-      x.child("active").forEach((i) => {
+      x.child("hire-out").forEach((i) => {
         const {
+          totalCost,
           customerId,
-          customerName,
-          createdOn,
-          customerDp,
-          idNumber,
-          email,
-          dateOfBirth,
-          phoneNumber,
-        } = x.child("data/" + i.val()).val();
-        aps.push({
+          vehicleId,
+          startDate,
+          endDate,
+          recieptId,
+          c = {},
+          v = {},
+        } = i.val();
+        const r = {
+          totalCost,
           customerId,
-          customerName,
-          createdOn,
-          customerDp,
-          idNumber,
-          email,
-          dateOfBirth,
-          phoneNumber,
-        });
-      });
-      this.setState({
-        activeCustomers: aps,
-      });
-    });
-    await this.db.child("vehicles").on("value", (x) => {
-      const aps = [];
-      x.child("active").forEach((i) => {
-        const {
           vehicleId,
-          vehicleName,
-          createdOn,
-          vehicleDp,
-          ratePerDay,
-          defaultCharge,
-          vehicleType,
-          numberPlate,
-        } = x.child("data/" + i.val()).val();
-        aps.push({
-          vehicleId,
-          vehicleName,
-          createdOn,
-          vehicleDp,
-          ratePerDay,
-          defaultCharge,
-          vehicleType,
-          numberPlate,
-        });
+          startDate,
+          endDate,
+          recieptId,
+          c,
+          v,
+        };
+        r.c = x.child("customers/data/" + r.customerId).val();
+        r.v = x.child("vehicles/data/" + r.vehicleId).val();
+        aps.push(r);
       });
       this.setState({
         loading: false,
-        activeVehicles: aps,
+        currentHires: aps,
       });
     });
   }
@@ -71,31 +47,34 @@ export default class Hire extends Component {
     this.db.off();
   }
 
-  activeVehicles_(d, i) {
+  currentHires(d, i) {
     return (
       <div className="customer-item" key={i}>
         <img
           src={
-            d.vehicleDp
-              ? d.vehicleDp
+            d.c.customerDp
+              ? d.c.customerDp
               : require("../../../../assets/drawables/ic-wheel.png").default
           }
           alt=""
           draggable={false}
           className="customer-image unselectable"
         />
-        <p className="customer-name unselectable">{d.vehicleName}</p>
+        <p className="customer-name unselectable">{d.c.customerName}</p>
         <p className="customer-desc unselectable">
-          Vehicle Type: {d.vehicleType}
+          Vehicle Name: {d.v.vehicleName}
         </p>
         <p className="customer-desc unselectable">
-          Rate Per Day: £ {d.ratePerDay}
+          Vehicle Type: {d.v.vehicleType}
         </p>
         <p className="customer-desc unselectable">
-          Default Rate: {d.defaultCharge} %
+          Start Date: {formatDate(d.startDate)}
         </p>
         <p className="customer-desc unselectable">
-          Number Plate: {d.numberPlate}
+          End Date: {formatDate(d.endDate)}
+        </p>
+        <p className="customer-desc unselectable">
+          Number Plate: {d.v.numberPlate}
         </p>
         <div
           style={{
@@ -108,17 +87,17 @@ export default class Hire extends Component {
           className="customer-btn"
           onClick={async () => {
             await setTimeout(() => {
-              this.setState({ hireOut: d });
+              this.setState({ recieve: d });
             }, 200);
           }}
         >
           <img
-            src={require("../../../../assets/drawables/ic-order.png").default}
+            src={require("../../../../assets/drawables/ic-hire.png").default}
             alt=""
             draggable={false}
             className="unselectable"
           />
-          <p className="unselectable">Issue</p>
+          <p className="unselectable">Recieve</p>
         </div>
       </div>
     );
@@ -131,7 +110,7 @@ export default class Hire extends Component {
             className=" title unselectable"
             style={{ margin: 0, marginLeft: "10px" }}
           >
-            Rent Vehicle
+            Recieve Vehicle
           </p>
         </div>
         <div className="customers-list">
@@ -147,20 +126,21 @@ export default class Hire extends Component {
               <Loader />
             </div>
           ) : (
-            this.state.activeVehicles.map((d, i) => {
-              return this.activeVehicles_(d, i);
+            this.state.currentHires.map((d, i) => {
+              return this.currentHires(d, i);
             })
           )}
         </div>
-        {this.state.hireOut ? (
-          <Issue
+        {this.state.recieve ? (
+          <Complete
             closeToast={this.props.closeToast}
             showTimedToast={this.props.showTimedToast}
             showUnTimedToast={this.props.showUnTimedToast}
-            customers={this.state.activeCustomers}
-            vehicle={this.state.hireOut}
+            customer={this.state.recieve.c}
+            vehicle={this.state.recieve.v}
+            recieve={this.state.recieve}
             close={() => {
-              this.setState({ hireOut: undefined });
+              this.setState({ recieve: undefined });
             }}
           />
         ) : (

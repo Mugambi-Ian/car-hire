@@ -3,6 +3,8 @@ import Customers from "./customers/customers";
 import Vehicles from "./vehicles/vehicles";
 import "./app-home.css";
 import Hire from "./hire/hire";
+import Recieve from "./recieve/recieve";
+import Reciept from "./reciept/reciept";
 
 export default class Home extends Component {
   state = {
@@ -99,6 +101,40 @@ export default class Home extends Component {
           </div>
           <div
             className={
+              this.state.activeScreen !== "recieve"
+                ? "nav-item"
+                : "nav-item active"
+            }
+            onClick={async () => {
+              if (this.state.activeScreen !== "recieve") {
+                this.setState({ activeScreen: "recieve" });
+                await setTimeout(() => {
+                  this.setState({
+                    activeScreen: "recieve",
+                  });
+                }, 100);
+              }
+            }}
+          >
+            <img
+              src={require("../../../assets/drawables/ic-car.png").default}
+              className="unselectable"
+              draggable={false}
+              alt="icon"
+            />
+            <p className="unselectable">Recieve </p>
+          </div>
+          <div
+            style={{
+              height: "1px",
+              marginLeft: "30px",
+              marginRight: "30px",
+              backgroundColor: "#000",
+              marginTop: "10px",
+            }}
+          />
+          <div
+            className={
               this.state.activeScreen !== "reciepts"
                 ? "nav-item"
                 : "nav-item active"
@@ -121,24 +157,6 @@ export default class Home extends Component {
               alt="icon"
             />
             <p className="unselectable">Reciepts</p>
-          </div>
-          <div
-            style={{
-              height: "1px",
-              marginLeft: "30px",
-              marginRight: "30px",
-              backgroundColor: "#000",
-              marginTop: "10px",
-            }}
-          />
-          <div className="nav-item" onClick={async () => {}}>
-            <img
-              src={require("../../../assets/drawables/ic-exit.png").default}
-              className="unselectable"
-              draggable={false}
-              alt="icon"
-            />
-            <p className="unselectable">Exit</p>
           </div>
           <img
             className="icon unselectable"
@@ -168,6 +186,18 @@ export default class Home extends Component {
             />
           ) : this.state.activeScreen === "hire" ? (
             <Hire
+              closeToast={this.props.closeToast}
+              showTimedToast={this.props.showTimedToast}
+              showUnTimedToast={this.props.showUnTimedToast}
+            />
+          ) : this.state.activeScreen === "recieve" ? (
+            <Recieve
+              closeToast={this.props.closeToast}
+              showTimedToast={this.props.showTimedToast}
+              showUnTimedToast={this.props.showUnTimedToast}
+            />
+          ) : this.state.activeScreen === "reciepts" ? (
+            <Reciept
               closeToast={this.props.closeToast}
               showTimedToast={this.props.showTimedToast}
               showUnTimedToast={this.props.showUnTimedToast}

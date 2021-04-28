@@ -1,0 +1,41 @@
+.customer-container {
+  height: 90vh;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 20px;
+  margin-right: 10px;
+  background-color: #fff;
+  flex: 1;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+.rental-details {
+  height: 90vh;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 10px;
+  margin-right: 20px;
+  background-color: #fff;
+  flex: 1.5;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.rental-details .rdrCalendarWrapper {
+  width: min-content;
+  margin-left: 20px;
+}
+
+.issue-body img.dp{
+  width: 250px;
+  height: 250px;
+  align-self: center;
+  border-radius: 150px;
+}
+.footer{
+  margin-left: 20px;
+}
